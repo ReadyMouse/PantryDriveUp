@@ -1,0 +1,1 @@
+=REGEX(REGEX(WEBSERVICE("https://translate.google.com/m?sl=en&tl="&C$1&"&hl=en&q="&ENCODEURL($B2)),".*<div class=""result-container"">",""),"<.*$","")

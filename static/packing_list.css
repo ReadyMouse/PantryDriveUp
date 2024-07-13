@@ -1,0 +1,29 @@
+@page { size: 8.5in 11in; margin: 0; }
+
+body { font-family: Helvetica, Arial, "sans-serif"; font-size: 10pt; margin: 0; }
+
+#title { text-align: center; font-size: 12pt; margin-top: 12mm; }
+
+.corner { display: block; position: absolute; }
+
+#top-left.corner     { top:  25mm; left:   8mm; width: 92mm; height:  92mm }
+#bottom-left.corner  { top: 133mm; left:   8mm; width: 92mm; height: 124mm }
+#top-right.corner    { top:  25mm; left: 110mm; width: 92mm; height:  69mm }
+#bottom-right.corner { top: 117mm; left: 110mm; width: 92mm; height: 140mm }
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.rj { text-align: right; }
+
+.column { float: left; width: 50% }
+
+.fam_color { background-color: {{ fam_color }}; }
+
+table { width: 100%; margin: 1mm 0 3mm 0; }
+table, th, td { border: 1px solid black; border-collapse: collapse; }
+td { padding: 1mm; }
+td.nob { border: none; }

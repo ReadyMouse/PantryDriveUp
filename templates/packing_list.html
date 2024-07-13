@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Packing List</title>
+    <!-- Style is included here because the style-sheet relies on Jinja2 templating -->
+    <style type="text/css"/>
+        @page { size: 8.5in 11in; margin: 0; }
+
+        body { font-family: Helvetica, Arial, "sans-serif"; font-size: 10pt; margin: 0; }
+
+        #title { text-align: center; font-size: 12pt; margin-top: 12mm; }
+
+        .corner { display: block; position: absolute; }
+
+        #top-left.corner     { top:  25mm; left:   8mm; width: 92mm; height:  92mm }
+        #bottom-left.corner  { top: 133mm; left:   8mm; width: 92mm; height: 124mm }
+        #top-right.corner    { top:  25mm; left: 110mm; width: 92mm; height:  69mm }
+        #bottom-right.corner { top: 117mm; left: 110mm; width: 92mm; height: 140mm }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .rj { text-align: right; }
+
+        .column { float: left; width: 50% }
+
+        .fam_color { background-color: {{ fam_color }}; }
+
+        table { width: 100%; margin: 1mm 0 3mm 0; }
+        table, th, td { border: 1px solid black; border-collapse: collapse; }
+        td { padding: 1mm; }
+        td.nob { border: none; }
+    </style>
+</head>
+
+{% macro groceries(category) %}
+    {% set standard_list = grocery_list[category]|simplify|e %}
+    {% set additions     = grocery_list[category ~ '_other']|simplify|e %}
+    {% if standard_list == '' and additions == '' -%}
+    <i><span style="color: red">none</span></i>
+    {%- elif standard_list != '' and additions != '' -%}
+    {{ standard_list }}, {{ additions }}
+    {%- else -%}
+    {{ standard_list }} {{ additions }}
+    {% endif -%}
+{% endmacro %}
+
+{% macro blockhead() %}
+       <div class="row">
+            <div class="column"><b>Name:</b> {{ groceries('full_name') }}</div>
+            <div class="rj column"><b>{{ groceries('lane') }}</b></div>
+       </div>
+{% endmacro %}
+
+<body>
+    <div id="title">
+        Grocery Packing List {{ timestamp }}
+    </div>
+
+    <div class="corner" id="top-left">
+        {{ blockhead() }}
+        <div id="freezer">
+            <table>
+                <tr style="height: 6mm"><td class="nob" width="90%"><b>Fam. Color:</b> {{ groceries('family_size') }}</td><td class="fam_color nob"></td></tr>
+                <tr style="height: 6mm"><td colspan="2"><b>Freezer</b></td></tr>
+                <tr><td colspan="2" style="height: 19mm"><u>Bonus:</u>&nbsp;&nbsp; {{ groceries('freezer-bonus') }}</td></tr>
+                <tr><td colspan="2" style="height: 19mm"><u>Meat:</u>&nbsp;&nbsp; {{ groceries('freezer-meats') }}</td></tr>
+            </table>
+        </div>
+
+        <div id="fridge">
+            <table>
+                <tr style="height: 6mm"><td><b>Fridge</b></td></tr>
+                <tr><td style="height: 19mm">{{ groceries('fridge') }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="corner" id="bottom-left">
+        {{ blockhead() }}
+        <div id="cans">
+            <table style="height: 119mm">
+                <tr style="height: 6mm"><td class="nob" width="90%"><b>Fam. Color:</b> {{ groceries('family_size') }}</td><td class="fam_color nob"></td></tr>
+                <tr style="height: 6mm"><td colspan="2"><b>Cans</b></td></tr>
+                <tr><td colspan="2"><u>Beans &amp; Lentils:</u>&nbsp;&nbsp; {{ groceries('beans') }}</td></tr>
+                <tr><td colspan="2"><u>Vegetables (canned):</u>&nbsp;&nbsp; {{ groceries('canned-veg') }}</td></tr> 
+                <tr><td colspan="2"><u>Canned Soup & Broth:</u>&nbsp;&nbsp; {{ groceries('canned-soup') }}, {{ groceries('broth') }}</td></tr>
+		<tr><td colspan="2"><u>Meat (canned):</u>&nbsp;&nbsp; {{ groceries('canned-meat') }}</td></tr>
+                <tr><td colspan="2"><u>Veg. Oil:</u>&nbsp;&nbsp; {{ groceries('oil') }}</td></tr>
+                <tr><td colspan="2"><u>Breakfast:</u>&nbsp;&nbsp; {{ groceries('breakfast') }}</td></tr>
+		<tr><td colspan="2"><u>Coffee/tea/cocoa:</u>&nbsp;&nbsp; {{ groceries('coffee') }}</td></tr>
+		<tr><td colspan="2"><u>Milk:</u>&nbsp;&nbsp; {{ groceries('up-milk') }}</td></tr>
+		<tr><td colspan="2"><u>Juice:</u>&nbsp;&nbsp; {{ groceries('juice') }}</td></tr>
+                <tr><td colspan="2"><u>Snack bags (kids only):</u>&nbsp;&nbsp; {{ groceries('snack_bags') }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="corner" id="top-right">
+        {{ blockhead() }}
+        <div id="fresh_food">
+            <table>
+                <tr style="height: 6mm"><td class="nob" width="90%"><b>Fam. Color:</b> {{ groceries('family_size') }}</td><td class="fam_color nob"></td></tr>
+                <tr style="height: 6mm"><td colspan="2"><b>Fresh Food</b></td></tr>
+                <tr><td colspan="2" style="height: 19mm">{{ groceries('fresh-food') }}</td></tr>
+            </table>
+        </div>
+
+        <div id="baby">
+            <table>
+                <tr style="height: 6mm"><td><b>Baby</b></td></tr>
+                <tr><td colspan="2"><u>Diapers &amp; pull-ups:</u>&nbsp;&nbsp; {{ groceries('diapers') }}</td></tr>
+                <tr><td colspan="2"><u>Formula:</u>&nbsp;&nbsp; {{ groceries('formula') }}</td></tr>
+                <tr><td colspan="2"><u>Baby food:</u>&nbsp;&nbsp; {{ groceries('baby-food') }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="corner" id="bottom-right">
+        {{ blockhead() }}
+        <div id="pantry">
+            <table style="height: 135mm">
+                <tr style="height: 6mm"><td class="nob" width="90%" ><b>Fam. Color:</b> {{ groceries('family_size') }}</td><td class="fam_color nob"></td></tr>
+                <tr style="height: 6mm"><td colspan="2"><b>Pantry</b></td></tr>
+		<tr><td colspan="2"><u>Bonus:</u>&nbsp;&nbsp; {{ groceries('bonus') }}</td></tr>
+		<tr><td colspan="2"><u>Fruit (canned):</u>&nbsp;&nbsp; {{ groceries('canned-fruit') }}</td></tr>
+		<tr><td colspan="2"><u>Pantry:</u>&nbsp;&nbsp; {{ groceries('pantry-2') }}</td></tr>
+		<tr><td colspan="2"><u>Snacks:</u>&nbsp;&nbsp; {{ groceries('snacks') }}</td></tr>
+		<tr><td colspan="2"><u>Peanut butter &amp; jelly:</u>&nbsp;&nbsp; {{ groceries('pbj') }}</td></tr>
+		<tr><td colspan="2"><u>Tomatoes (canned):</u>&nbsp;&nbsp; {{ groceries('canned-tom') }}</td></tr>
+                <tr><td colspan="2"><u>Pantry:</u>&nbsp;&nbsp; {{ groceries('pantry') }}</td></tr>
+		<tr><td colspan="2"><u>Rice:</u>&nbsp;&nbsp; {{ groceries('rice') }}</td></tr>
+		<tr><td colspan="2"><u>Toilet paper / tissues:</u>&nbsp;&nbsp; {{ groceries('paper') }}</td></tr>
+                <tr><td colspan="2"><u>Personal hygiene:</u>&nbsp;&nbsp; {{ groceries('hygiene') }}</td></tr>
+		<tr><td colspan="2"><u>Bonus items:</u>&nbsp;&nbsp; {{ groceries('bonus-2') }}</td></tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
